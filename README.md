@@ -1,2 +1,2 @@
 # Trishank_RUGVED
-RUGVED student project 
+RUGVED student project view
