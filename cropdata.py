@@ -14,7 +14,6 @@ interface MandiRatesProps {
   language?: Language;
 }
 
-// Comprehensive commodity data from Indian markets
 const commodityData = [
   {
     name: "Wheat",
