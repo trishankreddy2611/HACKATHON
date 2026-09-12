@@ -1,1 +1,380 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>e-Procurement Portal | Ministry of Agriculture & Farmers Welfare</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & Noto Sans Devanagari -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            gov: {
+              navy: '#002B49',
+              darkNavy: '#001A2C',
+              saffron: '#FF671F',
+              green: '#046A38',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            hindi: ['"Noto Sans Devanagari"', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    .tricolor-stripe {
+      background: linear-gradient(90deg, #FF671F 33.33%, #FFFFFF 33.33%, #FFFFFF 66.66%, #046A38 66.66%);
+      height: 4px;
+    }
+  </style>
+</head>
+<body class="bg-[#f4f6f9] text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- ================= TOP GOVT UTILITY STRIP ================= -->
+  <aside class="bg-gov-darkNavy text-slate-300 text-xs py-1.5 px-4 border-b border-slate-800">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <div class="flex items-center gap-2 font-medium">
+        <span class="inline-block w-2.5 h-2.5 rounded-full bg-gov-saffron"></span>
+        <span>भारत सरकार | Government of India</span>
+        <span class="text-slate-600">|</span>
+        <span class="text-slate-300 hidden sm:inline">Ministry of Agriculture & Farmers Welfare</span>
+      </div>
+      <div class="flex items-center gap-3 text-[11px]">
+        <span class="text-emerald-400 font-mono">NIC Portal: Online</span>
+        <span class="text-slate-600">|</span>
+        <span class="font-hindi text-slate-300">हिन्दी / English</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= EMBLEM & MINISTRY HEADER ================= -->
+  <header class="bg-white border-b border-slate-200 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center gap-4">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg" 
+             alt="National Emblem of India" 
+             class="h-14 w-auto object-contain" />
+        <div class="border-l border-slate-300 pl-4">
+          <p class="font-hindi text-xs font-semibold text-slate-600 leading-tight">कृषि एवं किसान कल्याण मंत्रालय</p>
+          <h1 class="text-base sm:text-lg font-bold text-gov-navy leading-tight">Ministry of Agriculture & Farmers Welfare</h1>
+          <p class="text-xs font-semibold text-gov-green tracking-wide mt-0.5">
+            District Officer Procurement Console 
+          </p>
+        </div>
+      </div>
+      <div class="text-right hidden sm:block">
+        <div class="text-xs font-bold text-slate-900">District Agricultural Office (DAO)</div>
+        <div class="text-[11px] text-slate-500 font-mono">e-Procurement Gateway Feed</div>
+      </div>
+    </div>
+
+    <!-- Official Tricolor Stripe -->
+    <div class="tricolor-stripe"></div>
+
+    <!-- Navigation Bar -->
+    <nav class="bg-gov-navy text-white text-xs font-medium">
+      <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+        <div class="flex items-center space-x-1">
+          <a href="#" class="px-3 py-2.5 bg-gov-saffron text-white font-semibold flex items-center gap-1.5">
+            <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
+            Procurement Console
+          </a>
+          <button onclick="fetchRequestsFromBackend(); fetchDeficitsFromBackend();" class="px-3 py-2.5 hover:bg-gov-darkNavy transition flex items-center gap-1.5 text-slate-200">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+            Refresh Data
+          </button>
+        </div>
+        <div class="text-[11px] text-slate-300" id="clock">--:--:--</div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ================= MAIN CONTENT ================= -->
+  <main class="max-w-7xl mx-auto px-4 py-6 space-y-6 flex-1 w-full">
+
+    <!-- Section 1: Buffer Stock Deficits -->
+    <section>
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2">
+          <i data-lucide="pie-chart" class="w-4 h-4 text-gov-navy"></i>
+          National Buffer Stock Deficits
+        </h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="deficits-container">
+        <div class="col-span-3 text-xs text-slate-400 py-4 text-center bg-white border border-slate-200 rounded">
+          Loading buffer deficit data...
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Farmer Queue -->
+    <section class="bg-white rounded-md border border-slate-200 shadow-xs overflow-hidden">
+      <!-- Toolbar -->
+      <div class="p-4 border-b border-slate-200 bg-slate-50 flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div>
+          <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+            <i data-lucide="inbox" class="w-4 h-4 text-gov-navy"></i>
+            Inbound Farmer Procurement Requests
+          </h2>
+          <p class="text-xs text-slate-500">Live feed from Central Database</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <div class="relative">
+            <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5"></i>
+            <input 
+              type="text" 
+              id="searchInput" 
+              oninput="handleSearch(this.value)" 
+              placeholder="Search Crop, PIN, Phone..." 
+              class="pl-8 pr-3 py-1 text-xs border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-gov-navy w-48 sm:w-60"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead class="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200 uppercase tracking-wider text-[11px]">
+            <tr>
+              <th class="py-3 px-4">Request ID</th>
+              <th class="py-3 px-4">Farmer Phone</th>
+              <th class="py-3 px-4">Location (PIN)</th>
+              <th class="py-3 px-4">Requested Crop</th>
+              <th class="py-3 px-4">AI Viability Score</th>
+              <th class="py-3 px-4">Weather / Soil Context</th>
+              <th class="py-3 px-4">Status</th>
+              <th class="py-3 px-4 text-right">Officer Action</th>
+            </tr>
+          </thead>
+          <tbody id="table-body" class="divide-y divide-slate-200">
+            <tr>
+              <td colspan="8" class="text-center py-8 text-slate-400">Waiting for backend data...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="p-3 bg-slate-50 border-t border-slate-200 text-xs text-slate-500 flex justify-between">
+        <span id="record-count">0 requests loaded</span>
+        <span>Secure Government Procurement Network</span>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= AUDIT MODAL ================= -->
+  <div id="auditModal" class="fixed inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-lg border-2 border-gov-navy shadow-2xl max-w-xl w-full overflow-hidden text-xs">
+      <div class="bg-gov-navy text-white px-5 py-3 flex justify-between items-center">
+        <h3 class="font-bold" id="modalTitle">Procurement Audit</h3>
+        <button onclick="closeModal()" class="text-slate-300 hover:text-white text-base">✕</button>
+      </div>
+      <div class="p-5 space-y-3" id="modalContent"></div>
+      <div class="bg-slate-100 px-5 py-3 border-t border-slate-200 flex justify-end gap-2" id="modalActions"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-5 right-5 bg-gov-navy text-white text-xs px-4 py-2 rounded shadow-lg transition-opacity duration-300 opacity-0 pointer-events-none z-50 border border-slate-600">
+    <span id="toast-message">Notification</span>
+  </div>
+
+  <!-- ================= JAVASCRIPT INTEGRATION ZONE ================= -->
+  <script>
+    // -------------------------------------------------------------
+    // 1. YOUR FRIEND'S BACKEND SERVER URL GOES HERE:
+    // -------------------------------------------------------------
+    const BACKEND_URL = 'http://localhost:5000'; // Ask your friend for this port/URL!
+
+    let allRequests = [];
+
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      setInterval(() => {
+        document.getElementById('clock').textContent = new Date().toLocaleTimeString('en-IN');
+      }, 1000);
+
+      // Fetch live data as soon as page loads
+      fetchDeficitsFromBackend();
+      fetchRequestsFromBackend();
+    });
+
+    // -------------------------------------------------------------
+    // 2. FETCH DEFICITS FROM BACKEND (GET)
+    // -------------------------------------------------------------
+    async function fetchDeficitsFromBackend() {
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/deficits`);
+        const data = await response.json();
+        renderDeficits(data);
+      } catch (err) {
+        console.error('Could not connect to /api/deficits:', err);
+      }
+    }
+
+    // -------------------------------------------------------------
+    // 3. FETCH FARMER REQUESTS FROM BACKEND (GET)
+    // -------------------------------------------------------------
+    async function fetchRequestsFromBackend() {
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/requests`);
+        const data = await response.json();
+        allRequests = data;
+        renderTable(allRequests);
+      } catch (err) {
+        console.error('Could not connect to /api/requests:', err);
+      }
+    }
+
+    // -------------------------------------------------------------
+    // 4. SEND OFFICER DECISION TO BACKEND (POST)
+    // -------------------------------------------------------------
+    async function sendDecisionToBackend(id, action) {
+      // 1. Update UI immediately so the user sees the change
+      allRequests = allRequests.map(r => (r.id === id ? { ...r, status: action } : r));
+      renderTable(allRequests);
+      closeModal();
+      showToast(`Request ${id} marked as ${action}`);
+
+      // 2. Send the decision to your friend's database
+      try {
+        await fetch(`${BACKEND_URL}/api/decision`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ requestId: id, status: action })
+        });
+        // Refresh buffer stats to show new stock totals
+        fetchDeficitsFromBackend();
+      } catch (err) {
+        console.error('Failed to post decision to backend:', err);
+      }
+    }
+
+    // -------------------------------------------------------------
+    // 5. RENDERING HELPERS
+    // -------------------------------------------------------------
+    function renderDeficits(deficits) {
+      const container = document.getElementById('deficits-container');
+      if (!deficits || deficits.length === 0) return;
+
+      container.innerHTML = deficits.map(item => `
+        <div class="p-4 bg-white border border-slate-200 rounded shadow-xs">
+          <div class="flex justify-between items-start">
+            <h3 class="font-bold text-gov-navy">${item.crop}</h3>
+            <span class="text-xs font-bold px-2 py-0.5 rounded border bg-amber-50 text-amber-700 border-amber-200">
+              ${item.deficitPercentage}% Deficit
+            </span>
+          </div>
+          <div class="mt-3 text-[11px] text-slate-600">
+            Stock: <strong>${(item.currentStockMetricTons || 0).toLocaleString()} MT</strong> / Target: ${(item.targetMetricTons || 0).toLocaleString()} MT
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderTable(data) {
+      const tbody = document.getElementById('table-body');
+      document.getElementById('record-count').textContent = `${data.length} requests loaded`;
+
+      if (!data || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-400">No requests in database.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = data.map(row => `
+        <tr class="hover:bg-slate-50">
+          <td class="py-2.5 px-4 font-mono font-bold">${row.id}</td>
+          <td class="py-2.5 px-4 font-mono">${row.farmerPhone || row.phone}</td>
+          <td class="py-2.5 px-4">${row.pincode}</td>
+          <td class="py-2.5 px-4 font-bold text-slate-900">${row.cropName || row.crop}</td>
+          <td class="py-2.5 px-4">
+            <span class="px-2 py-0.5 rounded border text-xs font-bold ${row.viabilityScore >= 70 ? 'bg-emerald-50 text-emerald-800 border-emerald-300' : 'bg-rose-50 text-rose-800 border-rose-300'}">
+              ${row.viabilityScore}%
+            </span>
+          </td>
+          <td class="py-2.5 px-4 max-w-xs truncate">${row.weatherSummary || 'No summary'}</td>
+          <td class="py-2.5 px-4">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${row.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-800' : row.status === 'REJECTED' ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800'}">
+              ${row.status}
+            </span>
+          </td>
+          <td class="py-2.5 px-4 text-right space-x-1 whitespace-nowrap">
+            <button onclick="openAudit('${row.id}')" class="px-2 py-1 border border-slate-300 bg-white hover:bg-slate-100 rounded text-slate-700 font-semibold">
+              Audit
+            </button>
+            ${row.status === 'PENDING' ? `
+              <button onclick="sendDecisionToBackend('${row.id}', 'APPROVED')" class="px-2 py-1 bg-gov-green hover:bg-emerald-700 text-white rounded font-bold">
+                ✓
+              </button>
+              <button onclick="sendDecisionToBackend('${row.id}', 'REJECTED')" class="px-2 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded font-bold">
+                ✕
+              </button>
+            ` : ''}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function openAudit(id) {
+      const req = allRequests.find(r => r.id === id);
+      if (!req) return;
+
+      document.getElementById('modalTitle').textContent = `Audit Request #${req.id}`;
+      document.getElementById('modalContent').innerHTML = `
+        <p><strong>Farmer Contact:</strong> ${req.farmerPhone || req.phone} (${req.pincode})</p>
+        <p><strong>Crop:</strong> ${req.cropName || req.crop} — Viability: ${req.viabilityScore}%</p>
+        <p><strong>Weather:</strong> ${req.weatherSummary || 'N/A'}</p>
+        <div class="bg-emerald-50 p-2 border border-emerald-200 rounded mt-2">
+          <strong>SMS Text:</strong> ${req.translatedSmsPreview || req.smsPreview || 'No preview available'}
+        </div>
+      `;
+
+      document.getElementById('modalActions').innerHTML = `
+        <button onclick="closeModal()" class="px-3 py-1 border rounded">Close</button>
+        ${req.status === 'PENDING' ? `
+          <button onclick="sendDecisionToBackend('${req.id}', 'REJECTED')" class="px-3 py-1 bg-rose-100 text-rose-800 rounded font-bold">Reject</button>
+          <button onclick="sendDecisionToBackend('${req.id}', 'APPROVED')" class="px-3 py-1 bg-gov-green text-white rounded font-bold">Approve</button>
+        ` : ''}
+      `;
+      document.getElementById('auditModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('auditModal').classList.add('hidden');
+    }
+
+    function handleSearch(val) {
+      const q = val.toLowerCase();
+      const filtered = allRequests.filter(r => 
+        (r.cropName || r.crop || '').toLowerCase().includes(q) ||
+        (r.pincode || '').includes(q) ||
+        (r.farmerPhone || r.phone || '').includes(q)
+      );
+      renderTable(filtered);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-message').textContent = msg;
+      toast.classList.remove('opacity-0');
+      setTimeout(() => toast.classList.add('opacity-0'), 2500);
+    }
+  </script>
+</body>
+</html>
