@@ -7,4 +7,6 @@ there are 4 members in the team
   data collevtion
 3-varshith
    font siZe and language
-4-v   
+4-koushik
+   duty-sms gate way
+   
